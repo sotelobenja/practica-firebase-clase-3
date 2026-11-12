@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Modelo: cursos/{cursoId}/resenas/{uid}
+    // El ID de la reseña es el UID autenticado; no se almacena otro campo UID.
+    // puntaje: int de 1 a 5; texto: string de 1 a 500 caracteres;
+    // autor: string de 1 a 80 caracteres; creadaEn: timestamp inmutable del servidor.
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    // La identidad es la clave de ruta, no un campo modificable del documento.
+    function uidUnchanged(uid) {
+      return isOwner(uid);
+    }
+
+    function uidNotModified(uid) {
+      return isOwner(uid);
+    }
+
+    function hasRequiredFields(data, fields) {
+      return data.keys().hasAll(fields);
+    }
+
+    function isValidResena(data) {
+      return data.keys().hasOnly(['puntaje', 'texto', 'autor', 'creadaEn'])
+        && hasRequiredFields(data, ['puntaje', 'texto', 'autor', 'creadaEn'])
+        && data.puntaje is int
+        && data.puntaje >= 1
+        && data.puntaje <= 5
+        && data.texto is string
+        && data.texto.size() >= 1
+        && data.texto.size() <= 500
+        && data.autor is string
+        && data.autor.size() >= 1
+        && data.autor.size() <= 80
+        && data.creadaEn is timestamp;
+    }
+
+    match /cursos/{cursoId} {
+      allow write: if false;
+
+      match /resenas/{uid} {
+        allow read: if true;
+        allow create: if uidUnchanged(uid)
+          && isValidResena(request.resource.data)
+          && request.resource.data.creadaEn == request.time;
+        allow update: if uidNotModified(uid)
+          && isValidResena(request.resource.data)
+          && request.resource.data.creadaEn == resource.data.creadaEn;
+        allow delete: if isOwner(uid);
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
