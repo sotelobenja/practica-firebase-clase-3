@@ -1,0 +1,34 @@
+{
+  "name": "practica-firebase-clase3",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Práctica de Programación Avanzada: Next.js + Firebase Hosting + SQL Connect + Cloud Firestore",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "typecheck": "tsc --noEmit",
+    "serve": "firebase emulators:start --only hosting",
+    "deploy:preview": "firebase hosting:channel:deploy local-test --expires 1d",
+    "emulators": "firebase emulators:start --only auth,dataconnect,firestore",
+    "seed": "node scripts/seed.mjs",
+    "atacar": "node scripts/atacar.mjs",
+    "test:reglas": "firebase emulators:exec --only firestore \"node --test tests/reglas.test.mjs\""
+  },
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "firebase": "^13.1.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "firebase-tools": "^15.34.1",
+    "typescript": "^5.9"
+  },
+  "engines": {
+    "node": ">=24.12.0"
+  }
+}
