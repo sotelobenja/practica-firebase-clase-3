@@ -52,6 +52,22 @@ npm run build
 Auth, SQL Connect y Firestore se conectan a sus emuladores locales; el build usa los servicios
 configurados en Firebase.
 
+Para evitar exponer claves reales en el repositorio, usar variables de entorno del cliente:
+
+```bash
+cp .env.example .env.local
+# completar los valores reales de Firebase en .env.local
+```
+
+Ejemplo de variables:
+
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY="tu-api-key"
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="practica-firebase-clase-3.firebaseapp.com"
+NEXT_PUBLIC_FIREBASE_PROJECT_ID="practica-firebase-clase-3"
+NEXT_PUBLIC_FIREBASE_APP_ID="1:xxxxxxxxxxxx:web:xxxxxxxxxxxxxxxxxxxxxx"
+```
+
 ## Despliegue de Firestore
 
 Revisar el proyecto activo en `.firebaserc` antes de desplegar:
